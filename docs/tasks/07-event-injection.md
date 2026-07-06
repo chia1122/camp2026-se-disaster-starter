@@ -18,97 +18,62 @@
 
 ## 你要做什麼
 
-先讀 PR diff，不要立刻寫 code。
+先讀 event 檔案，不要立刻寫 code。可以看 GitHub PR 的 Files changed，或打開本機 `events/event-1535/`。
 
-請判斷：
+先判斷：
 
 1. incoming data 哪裡不符合 schema？
 2. 這是資料錯誤、新需求，還是外部格式差異？
-3. 要寫 adapter、擴充 family schema、標為 `needs_review`，還是 reject？
-4. 這筆資料進 UI 後，會不會被誤認為已確認事實？
-5. event response 要如何在 GitHub Pages demo 中被看見？
+3. 應該 adapter、schema extension、mark `needs_review`，還是 reject？
+4. 進 UI 後會不會被誤認為已確認事實？
+5. demo 要怎麼看見處理結果？
 
-## 成果放置位置
+策略簡表：
 
-請遵守 `docs/output-paths.md`。
+| 情況                             | 優先策略                |
+| -------------------------------- | ----------------------- |
+| 欄位名稱或格式不同，但語意已存在 | adapter                 |
+| 內部模型真的缺少必要語意         | family schema extension |
+| 資訊可能有用但證據不足           | mark `needs_review`     |
+| 資料無法辨識或不該進 demo        | reject                  |
+| 只需要提醒使用者注意             | display warning         |
 
-外部輸入：
+decision 至少寫出理由：format mismatch、missing evidence、new domain meaning、display-only warning 或 reject reason。
 
-- staff PR 會新增 `events/event-1535/`
-- `events/event-1535/incoming-data.json` 是 dirty input
-- 不可直接把 `incoming-data.json` 當內部 normalized data
+## 成果放哪裡
 
-adapter：
+- dirty input 留在 `events/event-1535/`
+- adapter 放 `src/adapters/`
+- normalized result 若要給 UI 用，放 `src/fixtures/workspace/`
+- UI 從 `src/app/App.tsx` 或它匯入的 feature 看得到處理結果
+- decision / data contract / AI log 依實際變更更新
+- 測試放 `tests/`
 
-- 若需要轉換資料，新增或修改 `src/adapters/`
-- adapter 應該被測試或 UI flow 使用，不要只放著未引用
+## 不做什麼
 
-normalized data：
-
-- 轉換後若要給 UI 使用，放在 `src/fixtures/workspace/`
-- 不要放進 `src/fixtures/shared/`
-
-UI：
-
-- event response 必須從 `src/app/App.tsx` 可見
-- 或透過 `App.tsx` 匯入的 component / feature 可見
-- UI 必須顯示這筆資料的不確定性或處理結果
-
-schema：
-
-- 可擴充 family schema
-- 不可修改 `src/contracts/common.ts` 或 `CommonRecord`
-
-文件：
-
-- `docs/decisions.md`
-- `docs/data-contract.md`
-- `docs/ai-log.md`
-- 若影響 demo，更新 `docs/handoff.md`
-
-測試：
-
-- 至少新增或更新一個 adapter / validation test，放在 `tests/`
-
-## 你不需要做什麼
-
-- 不直接把 `incoming-data.json` 搬進 `src/fixtures/shared/`
+- 不直接搬 `incoming-data.json` 到 `src/fixtures/shared/`
 - 不直接改 `CommonRecord`
 - 不自動覆蓋正式狀態
 - 不讓 AI 做最終判斷
-- 不把 schema mismatch 靜默吞掉
-- 不只在文件中描述 event response，卻沒有讓 demo 可見
+- 不做 webhook、diff parser、server importer 或 CLI ingestion
 
 ## 可以怎麼使用 Coding Agent
 
-先使用 `docs/prompts/event-injection.md` 的分析 prompt。  
-等小組做出決策後，再請 Coding Agent 寫 adapter、更新 UI 或補測試。
+分兩步：
 
-請要求 Coding Agent 先說明：
+1. 分析階段：只列 mismatch、風險、策略，不改檔。
+2. 實作階段：小組決定策略後，才請 Agent 修改指定檔案。
 
-1. dirty input 留在哪裡
-2. normalized result 會放在哪裡
-3. adapter 由哪個檔案呼叫
-4. UI 從哪個入口顯示 event response
-5. 哪個測試會驗證這次變更
-
-## 必須交付什麼
+## 必須交付
 
 - [ ] `docs/decisions.md` 記錄 event decision
-- [ ] 若需要，新增 adapter
-- [ ] 若需要，更新 family schema，但不改 `CommonRecord`
-- [ ] 若產生 normalized data，放在 `src/fixtures/workspace/`
-- [ ] GitHub Pages demo 中能看到 event injection 帶來的新狀態、不確定性或處理結果
+- [ ] demo 可見不確定、reject 或 warning 處理
 - [ ] UI 不把不確定資訊顯示成 verified fact
-- [ ] 至少新增或更新 1 個測試
-- [ ] `docs/data-contract.md` 更新
+- [ ] 若有 code change，至少新增或更新 1 個測試
+- [ ] 若 schema、adapter、fixture path 或 I/O contract 有變，更新 `docs/data-contract.md`
 - [ ] `docs/ai-log.md` 更新
 - [ ] 一個 commit，建議訊息：`Handle event injection`
 
-## 完成定義
-
-GitHub Pages demo 中能看出 event injection 帶來的新不確定性，而不是只在文件中描述。你們能說清楚：這筆新資料為什麼不能直接相信，以及你們選擇 adapter / schema extension / needs_review / reject 的理由。
-
 ## 停止條件
 
-16:10 後停止大重構，只保留最小可展示的 event response、測試與文件。
+16:10 後停止大重構。更完整的測試、文件與交接整理留到 Build Sprint 2。

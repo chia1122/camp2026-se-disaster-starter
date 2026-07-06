@@ -7,15 +7,13 @@
 ## 你現在拿到的來源
 
 - Phase 0 UI
-- GitHub Pages demo 或本機 dev server 畫面
+- GitHub Pages demo 或本機 dev server
 - `docs/phase0-observations.md`
-- `docs/output-paths.md`
-- 組內討論
-- 其他組的快速分享
+- 組內討論與其他組分享
 
 ## 你要做什麼
 
-暫停寫 code。請回頭看你們剛剛做出的 UI 與資料判斷，回答：
+暫停寫 code。回頭回答：
 
 1. 我們偷偷假設誰是使用者？
 2. 哪些資料看起來像事實，但其實沒有確認？
@@ -23,47 +21,29 @@
 4. 哪個狀態最難定義？
 5. AI 有沒有替我們做需求決策？
 6. 如果另一組接手，會不知道什麼？
-7. 我們的成果是否真的接進 GitHub Pages demo，還是只存在於檔案裡？
+7. 成果真的接進 demo，還是只存在於檔案？
+8. 哪些問題看起來像資料解析，其實是責任或人工確認問題？
 
-## 成果放置位置
-
-本階段主要產出是復盤文件，不要求新增 UI。
-
-文件：
+## 成果放哪裡
 
 - 更新 `docs/phase0-observations.md`
 - 更新 `docs/ai-log.md`
+- 若 Phase 0 UI 沒接進首頁，只做最小修正到 `src/app/App.tsx` 或 `src/components/`
 
-若復盤發現 Phase 0 UI 沒有接進首頁，請只做最小修正：
-
-- `src/app/App.tsx`
-- `src/components/`
-
-## 你不需要做什麼
+## 不做什麼
 
 - 不繼續加功能
 - 不重構 UI
-- 不急著修所有問題
 - 不把觀察包裝成已確認答案
 
-## 可以怎麼使用 Coding Agent
+## 必須交付
 
-可以請 Coding Agent 幫你整理觀察，但不要讓它替你決定真實需求。
-
-建議 prompt 見 `docs/prompts/phase-0.md`。
-
-## 必須交付什麼
-
-- [ ] `docs/phase0-observations.md` 補完復盤後新增觀察
+- [ ] `docs/phase0-observations.md` 補完復盤觀察
 - [ ] `docs/ai-log.md` 補上 AI 協作紀錄
 - [ ] 準備 60 秒口頭分享
-- [ ] 至少寫出 1 個 AI 可能誤導你們的地方
-- [ ] 檢查 Phase 0 成果是否能從 GitHub Pages 首頁看到
-
-## 完成定義
-
-你們能清楚說出：Phase 0 卡住的不是技術，而是使用者、資料來源、查核狀態、責任邊界與 demo 入口沒有定義清楚。
+- [ ] 寫出 1 個 AI 可能誤導你們的地方
+- [ ] 檢查 Phase 0 成果是否能從首頁看到
 
 ## 停止條件
 
-10:30 停止討論，準備進入真實案例揭露與三條任務線分流。
+10:30 停止討論，準備進入案例揭露與任務線分流。

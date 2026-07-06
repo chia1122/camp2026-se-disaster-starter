@@ -8,77 +8,50 @@
 
 - 自己組的 `docs/spec.md`
 - 自己組的 `docs/data-contract.md`
-- 自己組的 `docs/output-paths.md`
 - 其他組的 spec
 - mentor / 同學質疑
 
 ## 你要做什麼
 
-閱讀其他組的 spec，針對工程風險提出具體質疑。
+閱讀其他組的 spec，用檢查問題幫他們找工程風險。
 
-你可以質疑：
+可以問：
 
-1. 使用者不明
-2. 資料來源不明
-3. 狀態不可驗證
-4. 責任角色不明
-5. scope 太大
-6. AI 權限過大
-7. 無法用前端 demo 呈現
-8. schema input / output 不清楚
-9. demo 成果沒有接進 `src/app/App.tsx` 的計畫
-10. normalized data 沒有明確放置路徑
+- 使用者是誰？
+- 資料從哪個檔案進來？
+- 狀態如何驗證？不確定時畫面怎麼顯示？
+- 誰需要人工確認？
+- scope 是否太大？
+- AI 是否被賦予最終判斷權？
+- 是否需要後端、外部 API、資料庫、地圖 SDK 或登入才做得出來？
+- demo 是否能從 `src/app/App.tsx` 看見？
+- 是否會自動覆蓋、排序、合併或判斷真相？
 
-收到質疑後，請回頭修正自己的 spec。
+收到質疑後，回頭修正自己的 spec。
 
-## 成果放置位置
+## 成果放哪裡
 
-本階段主要產出是文件與回饋，不要求新增 UI。
+- 更新 `docs/spec.md`
+- 更新 `docs/data-contract.md`
+- 更新 `docs/decisions.md`
+- 若有使用 AI 檢查 spec，更新 `docs/ai-log.md`
 
-請更新：
+若 demo 入口不清楚，在 `docs/spec.md` 補上 demo path。
 
-- `docs/spec.md`
-- `docs/data-contract.md`
-- `docs/decisions.md`
-- `docs/ai-log.md`，若有使用 AI 協助檢查 spec
-
-若你們發現 demo 入口不清楚，請在 `docs/spec.md` 補上：
-
-```text
-Demo entry path:
-- src/app/App.tsx
-- src/components/...
-- src/features/...
-```
-
-## 你不需要做什麼
+## 不做什麼
 
 - 不評比誰的點子比較酷
 - 不幫別組寫解法
 - 不擴大自己的 scope
 - 不把質疑變成辯論輸贏
-- 不在這個階段大量修改 UI
+- 不在這個階段大量改 UI
 
-## 可以怎麼使用 Coding Agent
-
-可以請 Coding Agent 幫你檢查 spec 是否有缺漏，但最後質疑與取捨由小組決定。
-
-建議要求它檢查：
-
-1. AC 是否能被 demo 驗證
-2. 資料是否有明確來源與放置路徑
-3. UI 是否有接進 GitHub Pages demo 的計畫
-
-## 必須交付什麼
+## 必須交付
 
 - [ ] 對其他組提出至少 2 個具體質疑
 - [ ] 自己收到質疑後，更新 `docs/spec.md`
 - [ ] 在 `docs/decisions.md` 記錄至少 1 個取捨
-- [ ] 檢查自己的 demo path 是否已寫清楚
-
-## 完成定義
-
-你們的 spec 被質疑後仍能說清楚：主流程是什麼、資料從哪裡來、成果會放在哪裡、哪些狀態需要人工確認、哪些功能今天不做。
+- [ ] 檢查自己的 demo path 是否清楚
 
 ## 停止條件
 

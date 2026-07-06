@@ -4,99 +4,55 @@
 
 整天都會用到。
 
-## 你現在拿到的來源
+## 先做這三步
 
-- `docs/tasks/`：每個階段的任務卡
-- `docs/output-paths.md`：成果放置路徑與 GitHub Pages 展示規則
-- `docs/prompts/`：可以複製給 Coding Agent 的 prompts
-- GitHub Issue：當前階段的 active task
-- staff PR：課中才會釋出的分流資料或 event injection
+1. 打開台上或 GitHub Issue 指到的任務卡。
+2. 先看「你現在拿到的來源」和「你要做什麼」。
+3. 開始前說清楚：要改哪裡、成果會從哪個畫面看到、哪些事今天不做。
 
-## 你要做什麼
+若任務卡要求讀 `docs/spec.md`、`docs/data-contract.md` 或 `docs/output-paths.md`，再打開那些文件。
 
-每到一個新階段，先讀該階段任務卡，再開始問 Coding Agent 或修改程式。
+## 共通規則
 
-任務卡會告訴你：
+- 可展示成果要能從 GitHub Pages 首頁看到或操作。
+- 前端成果要接到 `src/app/App.tsx` 或它匯入的 component。
+- `events/**` 是外部 dirty input，不要直接當內部資料。
+- 小組整理後的 normalized data 放在 `src/fixtures/workspace/`。
+- 不新增後端、資料庫、登入、Docker、爬蟲、地圖 SDK、外部 API 或安全掃描工具。
 
-1. 現在的資料來源是什麼
-2. 你要做什麼
-3. 你不需要做什麼
-4. 成果應該放在哪裡
-5. 可以怎麼請 Coding Agent 幫忙
-6. 要交付什麼成果
-7. 什麼時候該停止加功能
+更多路徑規則看 `docs/output-paths.md`。
 
-## 成果放置位置
+## 常見詞
 
-所有階段都要遵守 `docs/output-paths.md`。
+| 詞              | 這裡的意思                      |
+| --------------- | ------------------------------- |
+| fixture         | repo 裡的假資料                 |
+| dirty data      | 外部來的混亂資料，不能直接相信  |
+| normalized data | 符合內部 schema 的資料          |
+| schema          | 資料欄位和狀態規則              |
+| adapter         | 把外部格式轉成內部格式的小函式  |
+| entry path      | demo 從哪個檔案一路 render 出來 |
 
-最重要的規則：
+## 問 Coding Agent 前
 
-```text
-可展示成果必須能從 GitHub Pages 首頁看到或操作。
-```
+先要求 Agent 回答：
 
-可展示成果通常要接進：
+1. 要改哪些檔案？
+2. demo render path 是什麼？
+3. 會新增或更新什麼測試？若本階段不需要，寫「本階段不新增測試」。
+4. 哪些成果只屬於文件或測試？
+5. 不會做哪些超出範圍的事？
 
-```text
-src/main.tsx
-src/app/App.tsx
-src/components/
-src/features/
-src/fixtures/workspace/
-src/adapters/
-src/contracts/
-```
-
-文件、測試與 event input 放在：
-
-```text
-docs/
-tests/
-events/
-```
-
-但它們不能取代前端 demo。
-
-## 你不需要做什麼
-
-- 不需要自己猜接下來要做什麼
-- 不需要一次讀完整份課程設計
-- 不需要提前做後面階段的任務
-- 不需要處理尚未釋出的 event data
-
-## 可以怎麼使用 Coding Agent
-
-每次請 Coding Agent 動手前，先提供：
-
-1. 當前任務卡
-2. `docs/output-paths.md`
-3. `docs/spec.md` 的相關段落
-4. `docs/data-contract.md` 的相關段落
-5. 相關 schema 或 fixture
-6. 明確說明哪些檔案可以改
-
-請要求 Coding Agent 先說明：
-
-- 它打算修改哪些檔案
-- 哪些成果會出現在 GitHub Pages demo
-- 哪些成果只屬於文件、測試或 event input
-
-## 必須交付什麼
-
-每個階段都有自己的交付物。不要只交付 UI，也不要只交付文件。最後要能被展示、驗證或接手。
-
-## 完成定義
-
-完成不是「寫了很多檔案」，而是該階段要求的成果可被別人理解、驗證、接手，且需要展示的部分能從 GitHub Pages 首頁看到或操作。
+等小組確認後再讓 Agent 改檔。
 
 ## 停止條件
 
-時間到就停止新增功能，改成：
+時間到就停止加功能，改成：
 
-- 確認 demo 是否可見
-- 補文件
-- 補 AI log
-- 補 decision
+- 確認 demo 可見
+- 補文件、AI log、decision
+- 跑 `pnpm build`；sprint 結束或交接前盡量跑 `pnpm run check`
+- 若檢查沒過，記錄指令、錯誤和原因
 - commit
-- 準備分享
+
+不熟 Git 時先問組員或 mentor，不要用會刪掉別人改動的指令。

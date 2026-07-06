@@ -15,7 +15,7 @@
 
 ## 你要做什麼
 
-鎖定下午只做一條主流程，並把不做的事情寫清楚。
+鎖定下午只做一條主流程，並寫清楚不做什麼。
 
 請決定：
 
@@ -24,71 +24,37 @@
 3. 哪些 schema 欄位是必須？
 4. 哪些狀態一定要呈現？
 5. 哪些資料不能自動判斷？
-6. 哪些檔案是下午主要修改範圍？
-7. GitHub Pages demo 要從哪個入口看到成果？
-8. 若有小組整理後的 normalized data，要放在哪個 `src/fixtures/workspace/` 檔案？
+6. 下午主要修改哪些檔案？
+7. demo 從哪個入口看到成果？
+8. workspace data 要放哪裡？
 
-## 成果放置位置
+一條主流程可以是：列表 → 點一筆資料 → 看狀態與來源 → 標示需要人工確認。
 
-本階段主要產出是 scope 決策與下午修改計畫。
-
-請更新：
+## 成果放哪裡
 
 - `docs/spec.md`
 - `docs/data-contract.md`
 - `docs/decisions.md`
 
-若下午會新增功能，請在 scope lock decision 寫清楚預計修改路徑：
+scope lock decision 要寫出 UI entry、data path、test target 和 out of scope。
 
-```text
-UI entry:
-- src/app/App.tsx
-
-Components / features:
-- src/components/...
-- src/features/...
-
-Data:
-- src/fixtures/workspace/...
-
-Adapters:
-- src/adapters/...
-
-Tests:
-- tests/...
-```
-
-## 你不需要做什麼
+## 不做什麼
 
 - 不新增第二條主流程
-- 不把每個同學想做的功能都放進 scope
+- 不把所有想做的功能都放進 scope
 - 不為了漂亮 UI 犧牲資料契約
-- 不為了讓 AI 好做就降低安全邊界
-- 不在 scope lock 階段大量寫 code
+- 不讓 AI 決定 scope
+- 不做登入、安全工具、地圖服務、GitHub workflow 或 issue automation
 
-## 可以怎麼使用 Coding Agent
-
-可以請 Coding Agent 幫你把 spec 轉成 task list，但不要讓它決定 scope。
-
-請要求它列出：
-
-1. 哪些檔案下午必須改
-2. 哪些檔案不能改
-3. 哪些成果會在 GitHub Pages demo 被看到
-4. 哪些成果只屬於文件或測試
-
-## 必須交付什麼
+## 必須交付
 
 - [ ] `docs/spec.md` 有明確 `In scope`
 - [ ] `docs/spec.md` 有明確 `Out of scope`
-- [ ] `docs/data-contract.md` 有明確 input / output
+- [ ] `docs/data-contract.md` 有 input / output
 - [ ] `docs/decisions.md` 有一筆 scope lock decision
-- [ ] scope lock decision 寫清楚 demo entry path
-- [ ] 建立至少 3 個 GitHub issues 或 task checklist
+- [ ] 建立 3 到 5 個 issue 或 checklist item
 
-## 完成定義
-
-下午任何一位組員問「現在該不該做這個功能」或「這個成果要放哪裡」時，都能回到 `docs/spec.md`、`docs/data-contract.md`、`docs/decisions.md` 和 `docs/output-paths.md` 找到答案。
+每個 task 至少寫：AC、資料來源、可能修改檔案、demo 會看到什麼、今天不做什麼。
 
 ## 停止條件
 
