@@ -38,3 +38,23 @@ Phase 0 需要讓使用者新增工作、填寫人數預估，並保留「還不
 ### Consequences
 
 使用者重新整理頁面後，新增草稿會消失。若後續要保存或交接草稿，應新增 adapter 或整理成 `src/fixtures/workspace/` normalized data，並通過 validation。
+
+## DEC-003：GitHub Pages 展示與人員指派先做成前端 demo
+
+### Context
+
+使用者希望看到 `github.io` 展示畫面、可填寫的人工確認重點，以及完整的人員指派表單。
+
+### Options considered
+
+- 嘗試自動部署 GitHub Pages。
+- 將人工確認與人員指派草稿寫入 fixture。
+- 在 Vite app 中新增可展示頁與 runtime-only 表單。
+
+### Decision
+
+在 `src/app/App.tsx` 新增 GitHub Pages 展示頁、人工確認重點表單與人員指派表單。表單送出後只保存在前端 runtime state。
+
+### Consequences
+
+Demo 可從首頁看到並可由 `vite build` 產出 GitHub Pages 靜態檔，但目前不自動部署。人工確認紀錄與人員指派草稿重新整理後會消失；若後續需要保存，需設計 workspace fixture 或 adapter。

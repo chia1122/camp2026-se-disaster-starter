@@ -101,6 +101,74 @@ textarea {
   background: rgb(255 255 255 / 92%);
 }
 
+.pages-hero {
+  display: grid;
+  gap: 10px;
+  min-height: 260px;
+  align-content: center;
+  border-radius: 16px;
+  padding: 28px;
+  background:
+    linear-gradient(135deg, rgb(36 93 157 / 88%), rgb(67 155 199 / 78%)),
+    #245d9d;
+  background-position: center;
+  background-size: cover;
+  color: #ffffff;
+}
+
+.pages-hero h2 {
+  max-width: 720px;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.pages-hero p {
+  max-width: 680px;
+  margin: 0;
+  line-height: 1.7;
+}
+
+.pages-hero code {
+  border-radius: 6px;
+  padding: 2px 6px;
+  background: rgb(255 255 255 / 20%);
+}
+
+.pages-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.pages-grid article,
+.pages-checklist {
+  border: 1px solid #dbe4ef;
+  border-radius: 16px;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.pages-grid h3 {
+  margin: 8px 0;
+}
+
+.pages-grid p,
+.pages-checklist li {
+  color: #344054;
+  line-height: 1.6;
+}
+
+.metric-number {
+  color: #245d9d;
+  font-size: 2.4rem;
+  font-weight: 900;
+}
+
+.pages-checklist {
+  margin-top: 16px;
+}
+
 .panel__header {
   display: flex;
   align-items: baseline;
@@ -420,6 +488,27 @@ textarea {
   font-weight: 700;
 }
 
+.confirmation-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+  border-radius: 14px;
+  padding: 14px;
+  background: #f4fbff;
+}
+
+.confirmation-form h4 {
+  margin: 0;
+}
+
+.confirmation-form label {
+  display: grid;
+  gap: 6px;
+  color: #344054;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
 .task-page {
   display: grid;
   grid-template-columns: minmax(280px, 0.82fr) minmax(320px, 1.18fr);
@@ -504,6 +593,7 @@ textarea {
   .workbench-row,
   .task-page,
   .form-grid,
+  .pages-grid,
   .assessment-grid {
     grid-template-columns: 1fr;
   }

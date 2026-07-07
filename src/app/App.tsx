@@ -17,7 +17,13 @@ import {
 import { safeParseFixture } from "../lib/load-fixture";
 
 type TabKey =
-  "messy" | "reports" | "sites" | "tasks" | "assignments" | "newTask";
+  | "githubPages"
+  | "messy"
+  | "reports"
+  | "sites"
+  | "tasks"
+  | "assignments"
+  | "newTask";
 type CategoryKey = "report" | "site_status" | "volunteer_task" | "assignment";
 type SeverityKey = "critical" | "high" | "medium" | "low";
 type SortKey =
@@ -51,7 +57,25 @@ type DraftTask = {
   sourceReference: string;
 };
 
+type ConfirmationNote = {
+  focus: string;
+  owner: string;
+  nextStep: string;
+  note: string;
+};
+
+type DraftAssignment = {
+  id: string;
+  taskId: string;
+  volunteerGroupId: string;
+  peopleCount: number;
+  status: string;
+  decidedByRole: string;
+  decisionReason: string;
+};
+
 const tabs: Array<{ key: TabKey; label: string }> = [
+  { key: "githubPages", label: "GitHub Pages 展示" },
   { key: "messy", label: "第一階段原始資訊" },
   { key: "reports", label: "通報" },
   { key: "sites", label: "地點" },
@@ -178,8 +202,11 @@ const categoryOrder: CategoryKey[] = [
 ];
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<TabKey>("messy");
+  const [activeTab, setActiveTab] = useState<TabKey>("githubPages");
   const [draftTasks, setDraftTasks] = useState<DraftTask[]>([]);
+  const [draftAssignments, setDraftAssignments] = useState<DraftAssignment[]>(
+    [],
+  );
 
   const parsed = useMemo(() => {
     const reports = safeParseFixture(
@@ -268,10 +295,25 @@ export function App() {
       <section className="panel">
         {!parsed.success ? (
           <ErrorState message={parsed.message} />
+        ) : activeTab === "githubPages" ? (
+          <GithubPagesPreview
+            draftAssignmentsCount={draftAssignments.length}
+            draftTasksCount={draftTasks.length}
+            messyCount={messyRecords.length}
+          />
         ) : activeTab === "newTask" ? (
           <NewTaskPage
             draftTasks={draftTasks}
             onAddTask={(task) => setDraftTasks((current) => [task, ...current])}
+          />
+        ) : activeTab === "assignments" ? (
+          <AssignmentPage
+            existingAssignments={parsed.data.assignments}
+            tasks={parsed.data.tasks}
+            draftAssignments={draftAssignments}
+            onAddAssignment={(assignment) =>
+              setDraftAssignments((current) => [assignment, ...current])
+            }
           />
         ) : records.length === 0 ? (
           <EmptyState message="目前沒有資料" />
@@ -292,6 +334,58 @@ export function App() {
         )}
       </section>
     </main>
+  );
+}
+
+function GithubPagesPreview({
+  messyCount,
+  draftTasksCount,
+  draftAssignmentsCount,
+}: {
+  messyCount: number;
+  draftTasksCount: number;
+  draftAssignmentsCount: number;
+}) {
+  return (
+    <>
+      <div className="pages-hero">
+        <p className="eyebrow">GitHub Pages Demo</p>
+        <h2>災害資訊積木展示頁</h2>
+        <p>
+          這個畫面就是部署到 <code>github.io</code>{" "}
+          後首頁會看見的主要入口；所有成果都從 Vite app 進入，不依賴後端或外部
+          API。
+        </p>
+      </div>
+
+      <div className="pages-grid">
+        <article>
+          <span className="metric-number">{messyCount}</span>
+          <h3>Phase 0 原始資訊</h3>
+          <p>保留 dirty data 與人工確認脈絡，不直接宣稱為已確認事實。</p>
+        </article>
+        <article>
+          <span className="metric-number">{draftTasksCount}</span>
+          <h3>新增工作草稿</h3>
+          <p>前端 runtime 草稿，適合展示與討論，重新整理後不保存。</p>
+        </article>
+        <article>
+          <span className="metric-number">{draftAssignmentsCount}</span>
+          <h3>人員指派草稿</h3>
+          <p>表單欄位貼合 Assignment schema，但送出後仍需人工確認。</p>
+        </article>
+      </div>
+
+      <div className="pages-checklist">
+        <h3>GitHub Pages 檢核</h3>
+        <ul>
+          <li>首頁可進入災害分類工作台。</li>
+          <li>可填寫人工確認重點。</li>
+          <li>可新增工作草稿與人員指派草稿。</li>
+          <li>資料來源與查核狀態持續可見。</li>
+        </ul>
+      </div>
+    </>
   );
 }
 
@@ -355,6 +449,12 @@ function Phase0Workbench({
 
 function Phase0Row({ record }: { record: MessyReport }) {
   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [confirmationNote, setConfirmationNote] = useState<ConfirmationNote>({
+    focus: "",
+    owner: "",
+    nextStep: "",
+    note: "",
+  });
   const assessment = phase0Assessments[record.id];
   const toggleReason = (reason: string) => {
     setSelectedReasons((current) =>
@@ -440,8 +540,247 @@ function Phase0Row({ record }: { record: MessyReport }) {
         <div className="selection-summary">
           已選填 {selectedReasons.length} 個人工確認重點
         </div>
+
+        <form
+          className="confirmation-form"
+          onSubmit={(event) => event.preventDefault()}
+        >
+          <h4>人工確認重點表單</h4>
+          <div className="form-grid">
+            <label>
+              查核問題
+              <input
+                value={confirmationNote.focus}
+                onChange={(event) =>
+                  setConfirmationNote((current) => ({
+                    ...current,
+                    focus: event.target.value,
+                  }))
+                }
+                placeholder="例如：需要確認正確地點"
+              />
+            </label>
+            <label>
+              負責人或角色
+              <input
+                value={confirmationNote.owner}
+                onChange={(event) =>
+                  setConfirmationNote((current) => ({
+                    ...current,
+                    owner: event.target.value,
+                  }))
+                }
+                placeholder="例如：現場志工、查核者"
+              />
+            </label>
+          </div>
+          <label>
+            下一步
+            <input
+              value={confirmationNote.nextStep}
+              onChange={(event) =>
+                setConfirmationNote((current) => ({
+                  ...current,
+                  nextStep: event.target.value,
+                }))
+              }
+              placeholder="例如：聯絡回報者確認時間與位置"
+            />
+          </label>
+          <label>
+            備註
+            <textarea
+              value={confirmationNote.note}
+              onChange={(event) =>
+                setConfirmationNote((current) => ({
+                  ...current,
+                  note: event.target.value,
+                }))
+              }
+              placeholder="記錄不能直接派工的判斷脈絡。"
+            />
+          </label>
+        </form>
       </section>
     </article>
+  );
+}
+
+function AssignmentPage({
+  existingAssignments,
+  tasks,
+  draftAssignments,
+  onAddAssignment,
+}: {
+  existingAssignments: Array<{
+    id: string;
+    taskId: string;
+    volunteerGroupId: string;
+    peopleCount: number;
+    status: string;
+    decidedByRole?: string;
+    decisionReason?: string;
+  }>;
+  tasks: Array<{ id: string; title: string; peopleNeeded?: number }>;
+  draftAssignments: DraftAssignment[];
+  onAddAssignment: (assignment: DraftAssignment) => void;
+}) {
+  const firstTaskId = tasks[0]?.id ?? "";
+  const [taskId, setTaskId] = useState(firstTaskId);
+  const [volunteerGroupId, setVolunteerGroupId] = useState("VG-DRAFT");
+  const [peopleCount, setPeopleCount] = useState(1);
+  const [status, setStatus] = useState("requested");
+  const [decidedByRole, setDecidedByRole] = useState("coordinator");
+  const [decisionReason, setDecisionReason] = useState("");
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!taskId || !volunteerGroupId.trim() || peopleCount <= 0) return;
+
+    onAddAssignment({
+      id: `ASSIGN-DRAFT-${String(draftAssignments.length + 1).padStart(3, "0")}`,
+      taskId,
+      volunteerGroupId: volunteerGroupId.trim(),
+      peopleCount,
+      status,
+      decidedByRole: decidedByRole.trim(),
+      decisionReason: decisionReason.trim(),
+    });
+
+    setTaskId(firstTaskId);
+    setVolunteerGroupId("VG-DRAFT");
+    setPeopleCount(1);
+    setStatus("requested");
+    setDecidedByRole("coordinator");
+    setDecisionReason("");
+  };
+
+  const allAssignments = [...draftAssignments, ...existingAssignments];
+
+  return (
+    <>
+      <div className="panel__header">
+        <div>
+          <h2>人員指派表單</h2>
+          <p className="panel__note">
+            指派草稿依照 Assignment
+            欄位設計；送出後先留在前端畫面，仍需人工確認。
+          </p>
+        </div>
+        <p>{allAssignments.length} 筆指派</p>
+      </div>
+
+      <div className="task-page">
+        <form className="task-form" onSubmit={handleSubmit}>
+          <label>
+            對應工作
+            <select
+              required
+              value={taskId}
+              onChange={(event) => setTaskId(event.target.value)}
+            >
+              {tasks.map((task) => (
+                <option key={task.id} value={task.id}>
+                  {task.id}｜{task.title}
+                  {task.peopleNeeded ? `｜需求 ${task.peopleNeeded} 人` : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className="form-grid">
+            <label>
+              志工群組 ID
+              <input
+                required
+                value={volunteerGroupId}
+                onChange={(event) => setVolunteerGroupId(event.target.value)}
+                placeholder="例如：VG-003"
+              />
+            </label>
+            <label>
+              指派人數
+              <input
+                min="1"
+                required
+                type="number"
+                value={peopleCount}
+                onChange={(event) => setPeopleCount(Number(event.target.value))}
+              />
+            </label>
+          </div>
+
+          <div className="form-grid">
+            <label>
+              指派狀態
+              <select
+                value={status}
+                onChange={(event) => setStatus(event.target.value)}
+              >
+                <option value="requested">請求中</option>
+                <option value="confirmed">已確認承接</option>
+                <option value="rejected">已拒絕</option>
+                <option value="cancelled">已取消</option>
+                <option value="completed">已完成</option>
+              </select>
+            </label>
+            <label>
+              決策角色
+              <input
+                value={decidedByRole}
+                onChange={(event) => setDecidedByRole(event.target.value)}
+                placeholder="例如：coordinator"
+              />
+            </label>
+          </div>
+
+          <label>
+            指派原因與限制
+            <textarea
+              value={decisionReason}
+              onChange={(event) => setDecisionReason(event.target.value)}
+              placeholder="記錄人數、技能、風險或為何需要人工確認。"
+            />
+          </label>
+
+          <button className="primary-action" type="submit">
+            新增指派草稿
+          </button>
+        </form>
+
+        <section className="draft-list" aria-label="人員指派列表">
+          {allAssignments.map((assignment) => (
+            <article className="draft-card" key={assignment.id}>
+              <div className="assessment-column__header">
+                <div>
+                  <p className="assessment-label">{assignment.id}</p>
+                  <h3>{assignment.taskId}</h3>
+                </div>
+                <span className={`status-badge status-${assignment.status}`}>
+                  {labelForStatus(assignment.status)}
+                </span>
+              </div>
+              <div className="category-list">
+                <span className="category-chip category-assignment">
+                  {assignment.volunteerGroupId}
+                </span>
+                <span className="people-chip">
+                  指派：{assignment.peopleCount} 人
+                </span>
+              </div>
+              {assignment.decidedByRole ? (
+                <p className="draft-card__meta">
+                  決策角色：{assignment.decidedByRole}
+                </p>
+              ) : null}
+              {assignment.decisionReason ? (
+                <p>{assignment.decisionReason}</p>
+              ) : null}
+            </article>
+          ))}
+        </section>
+      </div>
+    </>
   );
 }
 

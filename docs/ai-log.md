@@ -25,6 +25,7 @@
 | ---------- | ------- | ---------------------- | ------------------------------------------------------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | 2026-07-07 | Phase 0 | 建立混亂資訊整理工作台 | 建議把首頁改成左右分欄：左側保留原始資訊，右側顯示分類、風險程度、不確定資訊與不能派工原因 | 採用        | 符合 Phase 0 任務卡，且沒有把 dirty data 寫入 normalized fixtures 或宣稱為 verified data | `src/app/App.tsx`, `src/styles/global.css`, `docs/phase0-observations.md`                                |
 | 2026-07-07 | Phase 0 | 新增工作互動與排序     | 建議用前端 runtime state 做工作草稿、用按鈕選填人工確認原因，並加入人數預估與排序          | 採用        | 符合前端-only 限制；不新增後端、不修改 `CommonRecord`，也不把草稿當 verified task        | `src/app/App.tsx`, `src/styles/global.css`, `docs/spec.md`, `docs/data-contract.md`, `docs/decisions.md` |
+| 2026-07-07 | Phase 0 | 展示頁與指派表單       | 建議新增 GitHub Pages 展示頁、人工確認重點填寫表單與人員指派完整表單                       | 採用        | 保持前端-only 與 runtime 草稿限制；不自動部署、不把指派草稿當成正式資料                  | `src/app/App.tsx`, `src/styles/global.css`, `docs/spec.md`, `docs/data-contract.md`, `docs/handoff.md`   |
 
 ## 範例
 
